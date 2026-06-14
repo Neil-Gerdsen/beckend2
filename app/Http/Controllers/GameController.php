@@ -27,7 +27,7 @@ class GameController extends Controller
      */
     public function store(Request $request)
     {
-        //
+       
     }
 
     /**
@@ -62,30 +62,5 @@ class GameController extends Controller
         //
     }
 
-    $user = auth()->user();
-    $symbool =($user->id == $game ->player_x_id) ? 'X' : 'O';
-    $column = $request->input('column');
-    $row = $request->input('row');
 
-
-    if($game->turn != $symbool){
-        return response()->json(['error' => 'Het is niet jouw beurt'], 403);
-    }
-
-    $exists = Zet::where('game_id', $game->id)
-        ->where('row', $row)
-        ->where('column', $column)
-        ->exists();
-
-    if($exists){
-        return response()->json(['error' => 'Deze zet is al gedaan'], 400);
-
-    Zet::create([
-        'game_id' => $game->id,
-        'player_id' => $user->id,
-        'row' => $row,
-        'column' => $column
-    ]);
-    $game->turn = ($symbool->turn == 'X') ? 'O' : 'X';
-    $game->save();
 }

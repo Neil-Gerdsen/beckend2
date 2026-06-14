@@ -1,10 +1,14 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ZettenController;
+
 
 Route::get('/', function () {
-    return view('welcome');
+    $users = User::select('id', 'name')->get();
+    return view('welcome', compact('users'));
 });
 
 Route::get('/dashboard', function () {
@@ -17,4 +21,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+Route::get('/zetten', [ZettenController::class, 'index']);
+Route::post('/zetten', [ZettenController::class, 'create'])->name('zetten.create');
+Route::get('/game/{id}', [ZettenController::class, 'show'])->name('game');
 require __DIR__.'/auth.php';
