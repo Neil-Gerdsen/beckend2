@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use App\Models\Zetten as Zet;
 class Zetten extends Model
 {
     use HasFactory;
@@ -34,8 +34,8 @@ class Zetten extends Model
     {
         return $this->hasMany(Spel::class);
     }
-    // public function zetten()
-    // {
-    //     return $this->hasMany(Zet::class, 'game_id');
-    // }
+    public function zetten()
+    {
+        return $this->hasMany(Zet::class, 'ronde_id');
+    }
 }

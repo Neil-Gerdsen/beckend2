@@ -17,7 +17,7 @@
             </style>
         @endif
     </head>
-    <body class="bg-[#FDFDFC]  text-[#1b1b18] flex p-6 lg:p-8 items-center lg:justify-center min-h-screen flex-col">
+    <body class="bg-[#FDFDFC] text-[#1b1b18] flex p-6 lg:p-8 items-center lg:justify-center min-h-screen flex-col">
         <header class="w-full lg:max-w-4xl max-w-[335px] text-sm mb-6 not-has-[nav]:hidden">
             @if (Route::has('login'))
                 <nav class="flex items-center justify-end gap-4">
@@ -47,49 +47,24 @@
                 </nav>
             @endif
         </header>
-        <div class="flex items-center justify-center w-full transition-opacity opacity-100 duration-750 lg:grow starting:opacity-0">
-            <main class="flex max-w-[335px] w-full flex-col-reverse lg:max-w-4xl lg:flex-row">
-                                    <h1 class="text-[#000] mb-1 font-medium">Speel een spelletje tic tac toe</h1>
-                  
-            </main>
-        </div>
+            <<main class="flex max-w-[335px] w-full flex-col lg:max-w-4xl lg:flex-row">
+    <div class="flex flex-col gap-4">
+        <h1 class="text-[#000] font-medium text-2xl">Speel een spelletje tic tac toe</h1>
+
+        @auth
+            <p>JE BENT INGELOGD</p>
+            <a href="{{ route('game.create') }}" 
+               style="background:blue; color:white; padding:10px 20px; display:inline-block;">
+                Nieuw spel starten
+            </a>
+        @else
+            <p>NIET INGELOGD</p>
+        @endauth
+    </div>
+</main>
 
         @if (Route::has('login'))
             <div class="h-14.5 hidden lg:block"></div>
         @endif
-        <form method="POST" action="{{ route('game.create') }}" class="w-full max-w-md">
-            @csrf
-            <div class="mb-5">
-                <label class="block text-sm font-semibold text-gray-600 mb-2">
-                    Speler 1
-                </label>
-                <select name="player_x_id" class="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                    <option value="">Kies speler 1</option>
-                    @foreach($users as $user)
-                        <option value="{{ $user->id }}">{{ $user->name }}</option>
-                    @endforeach
-                </select>
-                @error('player_x_id')
-                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                @enderror
-            </div>
-
-            <!-- Speler O -->
-            <div class="mb-6">
-                <label class="block text-sm font-semibold text-gray-600 mb-2">
-                    Speler 2
-                </label>
-                <select name="player_o_id" class="w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                    <option value="">Kies speler 2</option>
-                    @foreach($users as $user)
-                        <option value="{{ $user->id }}">{{ $user->name }}</option>
-                    @endforeach
-                </select>
-                @error('player_o_id')
-                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                @enderror
-            </div>
-            <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-black font-semibold py-2 px-4 rounded-lg">Spel starten</button>
-        </form>
     </body>
 </html>

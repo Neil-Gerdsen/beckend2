@@ -33,9 +33,5 @@ Route::resource('game', ZettenController::class)
         'store',
         'show',
     ]);
-
-Route::post('/game/create', [ZettenController::class, 'create'])->name('game.create');
-Route::post('/game/store', [ZettenController::class, 'store'])->name('game.store');
-Route::post('/game/show', [ZettenController::class, 'show'])->name('game.show');
-    
+Route::post('/game/{game}/zetten', [ZettenController::class, 'storeZet'])->name('game.zetten');
 require __DIR__.'/auth.php';

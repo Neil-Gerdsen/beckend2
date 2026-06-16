@@ -1,32 +1,24 @@
 <x-app-layout>
-    <div class="p-6">
+    <div class="p-6 bg-gray-100 min-h-screen">
         <h1 class="text-2xl font-bold mb-4">
-            {{ $spel->playerX->name }} vs {{ $spel->playerO->name }}
+            {{ $game->playerX->name }} vs {{ $game->playerO->name }}
         </h1>
 
-        <p class="mb-4">Beurt: <strong>{{ $spel->current_turn }}</strong></p>
-
-        @foreach($errors->all() as $error)
-            <p class="text-red-500 mb-2">{{ $error }}</p>
-        @endforeach
+        <p class="mb-4">Beurt: <strong>{{ $game->current_turn }}</strong></p>
 
         <!-- Bord -->
-        <div class="inline-block border border-gray-400">
+        <div style="display:inline-block; border: 3px solid black;">
             @foreach($bord as $rij => $kolommen)
-                <div class="flex">
+                <div style="display:flex;">
                     @foreach($kolommen as $kolom => $waarde)
-                        <form method="POST" action="{{ route('game.store') }}">
+                        <form method="POST" action="{{ route('game.zetten', $game->id) }}">
                             @csrf
-                            <input type="hidden" name="game_id" value="{{ $spel->id }}">
                             <input type="hidden" name="row" value="{{ $rij }}">
                             <input type="hidden" name="column" value="{{ $kolom }}">
 
-                            <button
-                                type="submit"
-                                class="w-20 h-20 border border-gray-400 text-3xl font-bold
-                                       hover:bg-gray-100 disabled:cursor-not-allowed"
-                                {{ $waarde ? 'disabled' : '' }}
-                            >
+                            <button type="submit"
+                                style="width:100px; height:100px; border:2px solid black; background:white; font-size:2rem; font-weight:bold; cursor:pointer;"
+                                {{ $waarde ? 'disabled' : '' }}>
                                 {{ $waarde ?? '' }}
                             </button>
                         </form>

@@ -4,7 +4,7 @@
             Nieuwe game
         </h1>
 
-        <form method="POST" action="{{ route('game.show') }}">
+        <form method="POST" action="{{ route('game.store') }}">
             @csrf
 
             <div class="bg-white">
