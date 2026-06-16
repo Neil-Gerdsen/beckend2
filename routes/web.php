@@ -21,7 +21,21 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/zetten', [ZettenController::class, 'index']);
-Route::post('/zetten', [ZettenController::class, 'create'])->name('zetten.create');
-Route::get('/game/{id}', [ZettenController::class, 'show'])->name('game');
+// Route::get('/zetten', [ZettenController::class, 'index']);
+// Route::post('/zetten', [ZettenController::class, 'create'])->name('zetten.create');
+// Route::get('/game/{id}', [ZettenController::class, 'show'])->name('game.show');
+// Route::get('/game/{id}', [ZettenController::class, 'create'])->name('game.create');
+
+Route::resource('game', ZettenController::class)
+    ->only([
+        'index',
+        'create',
+        'store',
+        'show',
+    ]);
+
+Route::post('/game/create', [ZettenController::class, 'create'])->name('game.create');
+Route::post('/game/store', [ZettenController::class, 'store'])->name('game.store');
+Route::post('/game/show', [ZettenController::class, 'show'])->name('game.show');
+    
 require __DIR__.'/auth.php';

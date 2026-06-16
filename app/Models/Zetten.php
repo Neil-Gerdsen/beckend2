@@ -21,7 +21,7 @@ class Zetten extends Model
         'created_at',
         'updated_at'
     ];
-      public function playerX()
+    public function playerX()
     {
         return $this->belongsTo(User::class, 'player_x_id');
     }
@@ -34,4 +34,8 @@ class Zetten extends Model
     {
         return $this->hasMany(Spel::class);
     }
+    // public function zetten()
+    // {
+    //     return $this->hasMany(Zet::class, 'game_id');
+    // }
 }

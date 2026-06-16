@@ -9,6 +9,8 @@ use App\Models\Zetten as Zet;
 use App\Models\Spel;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
 
 class ZettenController extends Controller
 {
@@ -26,18 +28,25 @@ class ZettenController extends Controller
      */
     public function create(Request $request)
     {
-        $request->validate([
-            'player_x_id' => 'required|exists:users,id',
-            'player_o_id' => 'required|exists:users,id|different:player_x_id',
-        ]);
 
-        $spel = Zetten::create([
-            'player_x_id' => $request->player_x_id,
-            'player_o_id' => $request->player_o_id,
-            'current_turn' => 'X', // X begint altijd
-        ]);
+        $players = User::query()->where('id', '!=', Auth::id())->orderBy('name')->get();
 
-        return redirect()->route('game', $spel->id);
+        //meesturen van alle players behalve waarmee in ben ingelogd
+        return view('game/create', compact('players'));
+        // $request->validate([
+        //     'player_x_id' => 'required|exists:users,id',
+        //     'player_o_id' => 'required|exists:users,id|different:player_x_id',
+        // ]);
+
+        // $ronde = Ronde::create([...]);
+        // $spel = Zetten::create([
+        //     'player_x_id' => $request->player_x_id,
+        //     'player_o_id' => $request->player_o_id,
+        //     'current_turn' => 'X',
+        //     'ronde_id' => $ronde->id,
+        // ]);
+
+        // return redirect()->route('game', $spel->id);
     }
     /**
      * Store a newly created resource in storage.
@@ -118,5 +127,22 @@ class ZettenController extends Controller
         $users = User::select('id', 'name')->get();
         return response()->json($users);
     }
+
+    public function getGameField(){
+        $rij = zetten::select('rij')->get();
+        $kolom = zetten::select('kolom')->get();
+        return response()->json(['rij' => $rij, 'kolom' => $kolom]);
+    }
+    public function createGameField($rij, $kolom){
+        
+        $gameField = [];
+        for ($i = 0; $i < $kolom; $i++) {
+            for ($j = 0; $j < $rij; $j++) {
+                $gameField[$i][$j] = null;
+            }
+        }
+        return response()->json($gameField);
+    }
+    
 
 }

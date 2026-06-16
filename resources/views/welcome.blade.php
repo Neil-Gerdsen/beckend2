@@ -57,7 +57,7 @@
         @if (Route::has('login'))
             <div class="h-14.5 hidden lg:block"></div>
         @endif
-        <form method="POST" action="{{ route('zetten.create') }}" class="w-full max-w-md">
+        <form method="POST" action="{{ route('game.create') }}" class="w-full max-w-md">
             @csrf
             <div class="mb-5">
                 <label class="block text-sm font-semibold text-gray-600 mb-2">
