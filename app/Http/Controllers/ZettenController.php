@@ -62,20 +62,22 @@ class ZettenController extends Controller
             'ronde_id' => 1,
         ]);
 
-        return redirect()->route('game.show', $spel->id);
+        return redirect()->route('game.show', $spel);
     }
-    public function storeZet(Request $request, $game_id)
+
+    //was eerst $game_id
+    public function storeZet(Request $request, $game)
     {
 
         $user = auth()->user();
-        $zetten = zetten::findOrFail($request->input('game_id'));
-        $symbool = ($user->id == $zetten->player_x_id) ? 'X' : 'O';
+        $zetten = Zetten::findOrFail($game);
+        $symbool = ($user->id == 1) ? 'X' : 'O';
         $column = $request->input('column');
         $row = $request->input('row');
 
-        if ($zetten->current_turn != $symbool) {
-            return response()->json(['error' => 'Het is niet jouw beurt'], 403);
-        }
+        // if ($zetten->current_turn != $symbool) {
+        //     return back()->withErrors(['beurt' => 'Het is niet jouw beurt']);
+        // }
 
         $exists = zetten::where('ronde_id', $zetten->id)
             ->where('row', $row)
@@ -83,19 +85,21 @@ class ZettenController extends Controller
             ->exists();
 
         if ($exists) {
-            return response()->json(['error' => 'Deze zet is al gedaan'], 400);
+            return back()->withErrors(['zet' => 'Dit vakje is al bezet']);
         }
 
-        zetten::create([
-            'ronde' => $zetten->id,
-            'player_id' => $user->id,
-            'row' => $row,
-            'column' => $column
+        Zetten::create([
+            'ronde_id' => $zetten->id,
+            'player_x_id' => $user->id,
+            'player_o_id' => $user->id,
+            'rij' => $row,
+            'kolom' => $column,
+            'current_turn' => $symbool,
         ]);
         $zetten->current_turn = ($zetten->current_turn == 'X') ? 'O' : 'X';
         $zetten->save();
 
-       return redirect()->route('game.show', $game_id);
+        return redirect()->route('game.show', $game);
 
     }
 
@@ -105,17 +109,12 @@ class ZettenController extends Controller
      */
     public function show($id)
     {
-        $game = zetten::findOrFail($id);
+        $game = Zetten::findOrFail($id);
         $bord = $this->createGameField(3, 3);
-        // $game->load([
-        //     'playerX',
-        //     'playerO',
-        //     'rounds.player',
-        // ]);
 
         foreach ($game->zetten as $zet) {
-            $symbool = ($zet->player_id == $game->player_x_id) ? 'X' : 'O';
-            $bord[$zet->row][$zet->column] = $symbool;
+            $symbool = ($game->current_turn == 'X') ? 'X' : 'O';
+            $bord[$zet->rij][$zet->kolom] = $symbool;
         }
 
         return view('game.show', compact('game', 'bord'));

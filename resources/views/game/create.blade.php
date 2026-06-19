@@ -21,18 +21,7 @@
                     </select>
 
                 </div>
-                <div class="flex flex-col">
-                    <label for="user_id">
-                        main user id: {{ auth()->user()->name }}
-                    </label>
-                    <select id="user_id" name="user_id">
-                        @foreach($players as $player)
-                            <option value="{{ $player->id }}">
-                                {{ $player->name }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
+                
 
 
             </div>

@@ -11,7 +11,7 @@
             @foreach($bord as $rij => $kolommen)
                 <div style="display:flex;">
                     @foreach($kolommen as $kolom => $waarde)
-                        <form method="POST" action="{{ route('game.zetten', $game->id) }}">
+                        <form method="POST" action="{{ route('game.zetten', $game) }}">
                             @csrf
                             <input type="hidden" name="row" value="{{ $rij }}">
                             <input type="hidden" name="column" value="{{ $kolom }}">
