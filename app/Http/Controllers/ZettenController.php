@@ -60,6 +60,7 @@ class ZettenController extends Controller
             'player_o_id' => $request->player_o_id,
             'current_turn' => 'X',
             'ronde_id' => 1,
+            
         ]);
 
         return redirect()->route('game.show', $spel);
@@ -79,9 +80,9 @@ class ZettenController extends Controller
         //     return back()->withErrors(['beurt' => 'Het is niet jouw beurt']);
         // }
 
-        $exists = zetten::where('ronde_id', $zetten->id)
-            ->where('row', $row)
-            ->where('column', $column)
+        $exists = Zetten::where('ronde_id', $zetten->id)
+            ->where('rij', $row)
+            ->where('kolom', $column)
             ->exists();
 
         if ($exists) {
@@ -97,6 +98,8 @@ class ZettenController extends Controller
             'current_turn' => $symbool,
         ]);
         $zetten->current_turn = ($zetten->current_turn == 'X') ? 'O' : 'X';
+        // $zetten->current_turn = ($symbool == 'X') ? 'O' : 'X';
+
         $zetten->save();
 
         return redirect()->route('game.show', $game);
@@ -112,6 +115,8 @@ class ZettenController extends Controller
         $game = Zetten::findOrFail($id);
         $bord = $this->createGameField(3, 3);
 
+        
+        
         foreach ($game->zetten as $zet) {
             $symbool = ($game->current_turn == 'X') ? 'X' : 'O';
             $bord[$zet->rij][$zet->kolom] = $symbool;
@@ -151,15 +156,15 @@ class ZettenController extends Controller
 
     public function getGameField()
     {
-        $rij = zetten::select('rij')->get();
-        $kolom = zetten::select('kolom')->get();
-        return response()->json(['rij' => $rij, 'kolom' => $kolom]);
+        $row = Zetten::select('rij')->get();
+        $column = Zetten::select('kolom')->get();
+        return response()->json(['rij' => $column, 'kolom' => $row]);
     }
-    public function createGameField($rows, $columns)
+    public function createGameField($row, $column)
     {
         $gameField = [];
-        for ($rij = 0; $rij < $rows; $rij++) {
-            for ($kolom = 0; $kolom < $columns; $kolom++) {
+        for ($rij = 0; $rij < $row; $rij++) {
+            for ($kolom = 0; $kolom < $column; $kolom++) {
                 $gameField[$rij][$kolom] = null;
             }
         }
