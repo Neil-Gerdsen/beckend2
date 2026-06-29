@@ -60,7 +60,7 @@ class ZettenController extends Controller
             'player_o_id' => $request->player_o_id,
             'current_turn' => 'X',
             'ronde_id' => 1,
-            
+
         ]);
 
         return redirect()->route('game.show', $spel);
@@ -69,17 +69,20 @@ class ZettenController extends Controller
     //was eerst $game_id
     public function storeZet(Request $request, $game)
     {
-
         $user = auth()->user();
         $zetten = Zetten::findOrFail($game);
-        $symbool = ($user->id == 1) ? 'X' : 'O';
+
+        if ($user->id == $zetten->player_x_id) {
+            $symbool = 'X';
+        } else {
+            $symbool = 'O';
+        }
+
         $column = $request->input('column');
         $row = $request->input('row');
-
-        // if ($zetten->current_turn != $symbool) {
-        //     return back()->withErrors(['beurt' => 'Het is niet jouw beurt']);
-        // }
-
+        if ($zetten->current_turn != $symbool) {
+            return back()->withErrors(['beurt' => 'Het is niet jouw beurt']);
+        }
         $exists = Zetten::where('ronde_id', $zetten->id)
             ->where('rij', $row)
             ->where('kolom', $column)
@@ -91,19 +94,17 @@ class ZettenController extends Controller
 
         Zetten::create([
             'ronde_id' => $zetten->id,
-            'player_x_id' => $user->id,
-            'player_o_id' => $user->id,
+            'player_x_id' => $zetten->player_x_id,
+            'player_o_id' => $zetten->player_o_id, 
             'rij' => $row,
             'kolom' => $column,
-            'current_turn' => $symbool,
+            'current_turn' => $symbool, 
         ]);
-        $zetten->current_turn = ($zetten->current_turn == 'X') ? 'O' : 'X';
-        // $zetten->current_turn = ($symbool == 'X') ? 'O' : 'X';
 
+        $zetten->current_turn = ($symbool == 'X') ? 'O' : 'X';
         $zetten->save();
 
         return redirect()->route('game.show', $game);
-
     }
 
 
@@ -115,10 +116,9 @@ class ZettenController extends Controller
         $game = Zetten::findOrFail($id);
         $bord = $this->createGameField(3, 3);
 
-        
-        
+
         foreach ($game->zetten as $zet) {
-            $symbool = ($game->current_turn == 'X') ? 'X' : 'O';
+            $symbool = $zet->current_turn; // direct lezen wat opgeslagen is
             $bord[$zet->rij][$zet->kolom] = $symbool;
         }
 
